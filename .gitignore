@@ -1,0 +1,16 @@
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+mvnw
+mvnw.cmd
+.mvn/
+.DS_Store
+
+*/target/
+out/*
