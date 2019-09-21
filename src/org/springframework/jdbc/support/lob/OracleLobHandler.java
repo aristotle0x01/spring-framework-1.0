@@ -225,7 +225,7 @@ public class OracleLobHandler implements LobHandler {
 				logger.debug("Set bytes for BLOB with length " + blob.length());
 			}
 			else {
-				ps.setBlob(parameterIndex, null);
+				ps.setBlob(parameterIndex,(Blob) null);
 				logger.debug("Set BLOB to null");
 			}
 		}
@@ -244,7 +244,7 @@ public class OracleLobHandler implements LobHandler {
 				logger.debug("Set binary stream for BLOB with length " + blob.length());
 			}
 			else {
-				ps.setBlob(parameterIndex, null);
+				ps.setBlob(parameterIndex,(Blob) null);
 				logger.debug("Set BLOB to null");
 			}
 		}
@@ -274,7 +274,7 @@ public class OracleLobHandler implements LobHandler {
 				logger.debug("Set string for CLOB with length " + clob.length());
 			}
 			else {
-				ps.setClob(parameterIndex, null);
+				ps.setBlob(parameterIndex,(Blob) null);
 				logger.debug("Set CLOB to null");
 			}
 		}
@@ -293,7 +293,7 @@ public class OracleLobHandler implements LobHandler {
 				logger.debug("Set ASCII stream for CLOB with length " + clob.length());
 			}
 			else {
-				ps.setClob(parameterIndex, null);
+				ps.setBlob(parameterIndex,(Blob) null);
 				logger.debug("Set CLOB to null");
 			}
 		}
@@ -312,7 +312,7 @@ public class OracleLobHandler implements LobHandler {
 				logger.debug("Set character stream for CLOB with length " + clob.length());
 			}
 			else {
-				ps.setClob(parameterIndex, null);
+				ps.setBlob(parameterIndex,(Blob) null);
 				logger.debug("Set CLOB to null");
 			}
 		}

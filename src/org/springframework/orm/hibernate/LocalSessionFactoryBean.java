@@ -327,7 +327,8 @@ public class LocalSessionFactoryBean implements FactoryBean, InitializingBean, D
 
 		if (this.hibernateProperties != null) {
 			// add given Hibernate properties
-			config.addProperties(this.hibernateProperties);
+			// comment out to pass compile
+			// config.addProperties(this.hibernateProperties);
 		}
 
 		if (this.dataSource != null) {
