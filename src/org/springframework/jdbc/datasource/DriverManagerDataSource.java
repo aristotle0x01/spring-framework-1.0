@@ -19,6 +19,8 @@ package org.springframework.jdbc.datasource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
 
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
@@ -153,4 +155,15 @@ public class DriverManagerDataSource extends AbstractDataSource implements Smart
 		return DriverManager.getConnection(url, username, password);
 	}
 
+	public Logger getParentLogger() throws SQLFeatureNotSupportedException{
+		throw new UnsupportedOperationException("为了编译通过，添加的该方法");
+	}
+
+	public boolean isWrapperFor(java.lang.Class iface) throws java.sql.SQLException{
+		throw new UnsupportedOperationException("为了编译通过，添加的该方法");
+	}
+
+	public Object unwrap(java.lang.Class iface) throws java.sql.SQLException{
+		throw new UnsupportedOperationException("为了编译通过，添加的该方法");
+	}
 }
