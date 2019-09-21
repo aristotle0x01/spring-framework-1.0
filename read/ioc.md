@@ -49,6 +49,16 @@ BeanDefinition注册容器
 					}
 	```
 
+# 测试验证 #
+
+	org.springframework.beans.factory.xml.XmlListableBeanFactoryTests
+		// 从xml中加载bean定义，并完成注册和容器初始化
+		setUp
+		
+		// 先找当前容器，找不到则递归父亲容器
+		testFactoryNesting
+
+
 # 3. 何时初始化 #
    getbean会发生什么
 
