@@ -60,7 +60,46 @@ BeanDefinition注册容器
 
 
 # 3. 何时初始化 #
-   getbean会发生什么
+getbean会发生什么?
+
+以XmlListableBeanFactoryTests.testFactoryNesting为例：
+
+**AbstractBeanFactory:**
+
+>This class provides singleton/prototype determination, singleton cache,aliases, FactoryBean handling, and bean definition merging for child bean definitions. It also allows for management of a bean factory hierarchy, implementing the HierarchicalBeanFactory interface.
+	
+	/** Cache of singletons: bean name --> bean instance */
+	private final Map singletonCache = Collections.synchronizedMap(new HashMap());
+
+	/** BeanPostProcessors to apply in createBean */
+	private final List beanPostProcessors = new ArrayList();
+
+    /** Parent bean factory, for bean inheritance support */
+	private BeanFactory parentBeanFactory;
+	
+	getBean
+		if singletonCache.get(beanName);
+		else createBean *// AbstractAutowireCapableBeanFactory*
+				// 递归依赖
+				getBean(bean.getDependsOn()[i]);
+				
+				// 生成对象
+				new BeanWrapperImpl(bean.getBeanClass());
+						clazz.newInstance()
+
+				// 设置属性
+				applyPropertyValues
+					// 递归创建可能的对象类型属性
+					resolveValueIfNecessary(beanName, ...);
+					// set之
+					deepCopy.setPropertyValueAt(pv, i);
+				
+				// 后置处理
+				BeanNameAware
+				BeanFactoryAware
+				bean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
+				invokeInitMethods(bean, beanName, mergedBeanDefinition);
+				bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 
 # 4. beanfactorypostprocessor #
    做了什么
