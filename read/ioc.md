@@ -129,3 +129,16 @@ getbean会发生什么?
 > Typically, post-processors that populate beans via marker interfaces or the like will implement postProcessBeforeInitialization(java.lang.Object, java.lang.String), while post-processors that wrap beans with proxies will normally implement postProcessAfterInitialization(java.lang.Object, java.lang.String).
 
 ![bean生命周期](https://user-images.githubusercontent.com/2216435/65381356-0ab87c80-dd22-11e9-8e31-901d8e7bf9fb.png)
+
+# 6. 值得研究的点 #
+1. 工厂方法
+2. 基于aware和postprocessor的扩展点
+3. 多重接口的层次设计
+4. wrapper方法和propertyvalue的抽象，避免直接反射
+
+# 7. 参考 #
+[Spring bean的生命流程](https://segmentfault.com/a/1190000010734016)
+
+[Spring IOC 容器源码分析系列文章导读](https://segmentfault.com/a/1190000015089790)
+
+[Spring 源码分析(二) —— 核心容器](https://my.oschina.net/kaywu123/blog/614325)
