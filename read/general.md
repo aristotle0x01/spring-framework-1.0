@@ -6,3 +6,12 @@
 
 # spring 1.0层次架构 #
 ![spring 框架](https://user-images.githubusercontent.com/2216435/65381262-2ae73c00-dd20-11e9-9d13-6d657213a3b4.png)
+
+# 参考 #
+[Spring源码分析](https://juejin.im/post/5ada8a5cf265da0b9347df8c)
+
+[coolblog ](https://segmentfault.com/u/coolblog "coolblog ")
+
+[水门-kay](https://my.oschina.net/kaywu123 "水门-kay")
+
+[spring-analysis](https://github.com/seaswalker/spring-analysis "spring-analysis")
