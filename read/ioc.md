@@ -1,3 +1,6 @@
+# 0. ioc核心接口设计 #
+![spring ioc核心设计](https://user-images.githubusercontent.com/2216435/65381357-0c824000-dd22-11e9-9c33-4b9c19dc13ab.png)
+
 # 1. beandefinition #
    bean 对应类在容器中的表示
 
@@ -102,6 +105,27 @@ getbean会发生什么?
 				bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 
 # 4. beanfactorypostprocessor #
-   做了什么
+
+原始的BeanFactory这一层并未做实现，要到ApplicationContext层
+
+> public interface BeanFactoryPostProcessor
+> Allows for custom modification of an application context's bean definitions, adapting the bean property values of the context's underlying bean factory.
+> Application contexts can auto-detect BeanFactoryPostProcessor beans in their bean definitions and apply them before any other beans get created.
+> 
+> Useful for custom config files targeted at system administrators that override bean properties configured in the application context.
+> 
+> See PropertyResourceConfigurer and its concrete implementations for out-of-the-box solutions that address such configuration needs.
+> 
+> A BeanFactoryPostProcessor may interact with and modify bean definitions, but never bean instances. Doing so may cause premature bean instantiation, violating the container and causing unintended side-effects. If bean instance interaction is required, consider implementing BeanPostProcessor instead.
+
+![生命周期](https://user-images.githubusercontent.com/2216435/65381707-7fdb8000-dd29-11e9-8a08-8f4f2acce4d4.png)
+
 # 5. beanpostprocessor #
-   做了什么
+> public interface BeanPostProcessor
+> 
+> Factory hook that allows for custom modification of new bean instances, e.g. checking for marker interfaces or wrapping them with proxies.
+> ApplicationContexts can autodetect BeanPostProcessor beans in their bean definitions and apply them to any beans subsequently created. Plain bean factories allow for programmatic registration of post-processors, applying to all beans created through this factory.
+> 
+> Typically, post-processors that populate beans via marker interfaces or the like will implement postProcessBeforeInitialization(java.lang.Object, java.lang.String), while post-processors that wrap beans with proxies will normally implement postProcessAfterInitialization(java.lang.Object, java.lang.String).
+
+![bean生命周期](https://user-images.githubusercontent.com/2216435/65381356-0ab87c80-dd22-11e9-8e31-901d8e7bf9fb.png)
