@@ -595,12 +595,19 @@ public abstract class AbstractAopProxyTests extends TestCase {
 	
 		ITestBean t = (ITestBean) pc.getProxy();
 		int newAge = 5;
+
+		// null 才能动态匹配，看看methodcache的作用
+		t.setName(null);
+		t.setName(null);
+
 		t.setAge(newAge);
+		t.setAge(newAge);
+		t.getAge();
 		assertTrue(t.getAge() == newAge);
 		String newName = "greg";
 		t.setName(newName);
 		assertEquals(newName, t.getName());
-		
+
 		t.setName(null);
 		// Null replacement magic should work
 		assertTrue(t.getName().equals(""));
