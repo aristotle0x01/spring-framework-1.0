@@ -1,9 +1,14 @@
 # spring aop #
+![](https://user-images.githubusercontent.com/2216435/65811742-c9c3da80-e1ef-11e9-8391-6ce0f948f06a.png)
+
 ### **aop需求** ###
 ![spring 框架](https://user-images.githubusercontent.com/2216435/65569139-12308d80-df8f-11e9-9a3c-e9d7b2498941.png)
 
 ### **aop术语** ###
 ![aop](https://user-images.githubusercontent.com/2216435/65569137-10ff6080-df8f-11e9-84a1-4365be5b69cb.png)
+
+**类层次**
+![](https://user-images.githubusercontent.com/2216435/65811698-0f33d800-e1ef-11e9-9c57-d5ef01f16f0c.png)
 
 # 调试源码 #
 
@@ -22,7 +27,7 @@
 										BeanPostProcessor beanProcessor = (BeanPostProcessor) it.next();
 										result = beanProcessor.postProcessAfterInitialization(result, name); // 乃成于此
 									}
-
+![aop beanpostprocessor层次](https://user-images.githubusercontent.com/2216435/65811616-fd9e0080-e1ed-11e9-8ba3-f22d6c02acff.png)
 ## 是否施加代理 ##
 
     AbstractAutoProxyCreator
@@ -48,13 +53,104 @@
 						ClassFilter
 						MethodMatcher
 
-如何使用不同的PointCut
+## 如何使用不同的PointCut ##
 
-	>由具体实现决定，可以继承既有StaticMethodMatcherPointcut，DynamicMethodMatcherPointcutAdvisor
+由具体实现决定，可以继承既有StaticMethodMatcherPointcut，DynamicMethodMatcherPointcutAdvisor
+![](https://user-images.githubusercontent.com/2216435/65811716-528e4680-e1ef-11e9-8150-5fa3bf7fe25a.png)
 
-动静匹配有何区别
+## 动静匹配有何区别 ##
+Spring采用这样的机制：在创建代理时对目标类的每个连接点使用静态切点检查，如果仅通过静态切点检查就可以知道连接点是不匹配的，则在运行时就不再进行动态检查了；如果静态切点检查是匹配的，在运行时才进行动态切点检查。
 
+在Spring中，不管是静态切面还是动态切面都是通过动态代理技术实现的。所谓静态切面是指在生成代理对象时，就确定了增强是否需要织入到目标类连接点上，而动态切面是指必须在运行期根据方法入参的值来判断增强是否织入到目标类连接点上
+
+## 代理执行过程 ##
+根据上面所述，在bean的初始化阶段，jdk/cglib代理即形成一层包裹，并将可行的Advisor.class作为配置放入代理类内部；
+
+在具体方法执行时，则通过invoke方法，并通过代理的配置找到增强实现。实际匹配执行，一是因为不是每个方法都需要代理，二是因为某些方法需要动态匹配执行时参数等。此时还通过methodcache缓存加速匹配查找。
+![aop代理和函数执行](https://user-images.githubusercontent.com/2216435/65811550-de52a380-e1ec-11e9-8ec0-7c6299d13e8d.png)
+
+关键代码详解：
+
+	// debug入口
+	AbstractAopProxyTests
+    	testReplaceArgument
+
+	// 以jdk代理示例，任何被代理的方法调用会直接进入
+	JdkDynamicAopProxy.invoke
+		getInterceptorsAndDynamicInterceptionAdvice
+			getInterceptorsAndDynamicInterceptionAdvice
+				// HashMapCachingAdvisorChainFactory::methodCache， 缓存加速查找
+				List cached = (List) this.methodCache.get(method);
+				if (cached == null) {
+					// 类匹配以及可能的方法动态匹配
+					cached = AdvisorChainFactoryUtils.calculateInterceptorsAndDynamicInterceptionAdvice(config, proxy, method, targetClass);
+								PointcutAdvisor pointcutAdvisor = (PointcutAdvisor) advisor;
+								if (pointcutAdvisor.getPointcut().getClassFilter().matches(targetClass)) {
+									MethodInterceptor interceptor = (MethodInterceptor) GlobalAdvisorAdapterRegistry.getInstance().getInterceptor(advisor);
+									MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher();
+									if (mm.matches(method, targetClass)) {
+										// 不管三七二十一先把静态匹配到的拦截器和可能的动态拦截器加进去
+										// 实际的动态参数匹配还得执行时候才检查，这样通过methodCache加速
+										if (mm.isRuntime()) {
+											interceptors.add(new InterceptorAndDynamicMethodMatcher(interceptor, mm) );
+										}
+										else {							
+											interceptors.add(interceptor);
+										}
+									}
+								}
+					this.methodCache.put(method, cached);
+				}
+
+		invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);							
+		// Proceed to the joinpoint through the interceptor chain
+		retVal = invocation.proceed();
+			if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
+				return invokeJoinpoint();
+			}
+
+			Object interceptorOrInterceptionAdvice = this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex);
+			if (interceptorOrInterceptionAdvice instanceof InterceptorAndDynamicMethodMatcher) {
+				// Evaluate dynamic method matcher here: static part will already have
+				// been evaluated and found to match
+				InterceptorAndDynamicMethodMatcher dm = (InterceptorAndDynamicMethodMatcher) interceptorOrInterceptionAdvice;
+				// 在此进行动态参数匹配
+				if (dm.methodMatcher.matches(this.method, this.targetClass, this.arguments)) {
+					return dm.interceptor.invoke(this);
+				}
+				else {
+					// Dynamic matching failed
+					// Skip this interceptor and invoke the next in the chain
+					return proceed();
+				}
+			}
+			else {
+				// It's an interceptor so we just invoke it: the pointcut will have
+				// been evaluated statically before this object was constructed
+				return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);
+			}
+					
+    AdvisorChainFactoryUtils
+    	calculateInterceptorsAndDynamicInterceptionAdvice
+    
+    HashMapCachingAdvisorChainFactory
+    	methodCache
+    
+    GlobalAdvisorAdapterRegistry
+    	getInterceptor
+
+**AopProxy**
+
+![](https://user-images.githubusercontent.com/2216435/65811724-7487c900-e1ef-11e9-8fee-97a956c92a96.png)
+
+**Invocation**
+
+![](https://user-images.githubusercontent.com/2216435/65811725-75205f80-e1ef-11e9-86b4-dfcd106c2f14.png)
+## 类的层次接口 ##
+![总层次](https://user-images.githubusercontent.com/2216435/65811654-5f5e6a80-e1ee-11e9-8632-d5dc90aa1a32.jpg)
 # 研究点 #
+![](https://user-images.githubusercontent.com/2216435/65811682-dbf14900-e1ee-11e9-8170-067a926f895e.png)
+
 ## jdk dynamic proxy ##
 
 ## cglib ##
