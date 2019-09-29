@@ -16,7 +16,9 @@
 
 package org.springframework.aop.framework;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
 import java.util.List;
@@ -1378,4 +1380,64 @@ public abstract class AbstractAopProxyTests extends TestCase {
 		assertEquals(1, th.getCalls("remoteException"));
 	}
 
+	private static interface ITest1 {
+		int d1();
+	}
+
+	private static class Test1 implements ITest1 {
+		public int d1(){
+			System.out.println("d1 running");
+			return 1;
+		}
+	}
+
+	private static class MyThrowsHandler implements InvocationHandler{
+		private ITest1 iTest1;
+
+		public MyThrowsHandler(ITest1 i1){
+			iTest1 = i1;
+		}
+
+		public Object invoke(Object proxy, Method method, Object[] args)
+									throws Throwable{
+			System.out.println(method.getName() + " will be excuted!");
+			return method.invoke(iTest1, args);
+		}
+	}
+
+
+	public static class Test {
+
+		public Test(){
+			System.out.println("I am Test class constructor called with no values");
+		}
+
+		public void someFunction(){
+			System.out.println("I am some function belonging to Test Class");
+		}
+	}
+
+	public static class Test2 extends Test{
+
+		public Test2(){
+			System.out.println("Constructor of Test2 with no values");
+		}
+
+		public void someFunction(){
+			System.out.println("I am someFunction overridden in Test2");
+		}
+	}
+
+	public static void main(String[] args){
+		Test t21 = new Test2();
+		t21.someFunction();
+
+		Test1 t1 = new Test1();
+		MyThrowsHandler h = new MyThrowsHandler(t1);
+		ITest1 i1 = (ITest1)Proxy.newProxyInstance(
+						Thread.currentThread().getContextClassLoader(),
+						new Class[]{ITest1.class},
+						h);
+		i1.d1();
+	}
 }
