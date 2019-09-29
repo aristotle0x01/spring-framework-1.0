@@ -152,6 +152,10 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 ![](https://user-images.githubusercontent.com/2216435/65811682-dbf14900-e1ee-11e9-8170-067a926f895e.png)
 
 ## jdk dynamic proxy ##
+### **method.invoke** ###
+>If the underlying method is an instance method, it is invoked using dynamic method lookup
+
+有意思，这就意味着Method其实只是描述，需要根据描述去具体的target上查找。涉及到jvm的具体实现
 
 ## cglib ##
 
