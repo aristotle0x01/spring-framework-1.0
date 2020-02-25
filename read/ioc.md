@@ -2,7 +2,7 @@
 ![spring ioc核心设计](https://user-images.githubusercontent.com/2216435/65381357-0c824000-dd22-11e9-9c33-4b9c19dc13ab.png)
 
 # 1. beandefinition #
-   bean 对应类在容器中的表示
+xml或者code中bean定义的对应定义及其实现：The main intention is to allow BeanFactoryPostProcessors (like PropertyPlaceholderConfigurer) to access and modify property values.
 
 抽象：
 
@@ -15,7 +15,7 @@
 
     AbstractBeanDefinition
     	RootBeanDefinition
-    	ChildBeanDefinition
+    	ChildBeanDefinition // 继承parent bean
 # 2. beanfactory #
 原始的容器是啥样的？
 
