@@ -117,9 +117,11 @@ getbean会发生什么?
 
 # 5. Bean实例化时机&ApplicationContext
 ### 何时触发实例化
-	SpringApplication.run	// spring boot
+	// spring boot
+	SpringApplication.run	
 		refreshContext
-			refresh	// AbstractApplicationContext
+			// AbstractApplicationContext
+			refresh	
 				finishBeanFactoryInitialization
 					beanFactory.preInstantiateSingletons
 						getBean
@@ -141,11 +143,13 @@ getbean会发生什么?
 ![生命周期](https://user-images.githubusercontent.com/2216435/65381707-7fdb8000-dd29-11e9-8a08-8f4f2acce4d4.png)
 
 # 7. 值得研究的点
-1. 工厂方法
-2. 基于aware和postprocessor的扩展点
-3. 多重接口的层次设计
-4. wrapper方法和propertyvalue的抽象，避免直接反射
-5. 异常机制的设计
+* nacos对BeanFactoryPostProcessor的使用，适配配置中心加载机制
+* 基于注解的bean加载扫描
+* 工厂方法
+* 基于aware和postprocessor的扩展点
+* 多重接口的层次设计
+* wrapper方法和propertyvalue的抽象，避免直接反射
+* 异常机制的设计
 
 # 8. 参考
 [Spring bean的生命流程](https://segmentfault.com/a/1190000010734016)
