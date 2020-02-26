@@ -116,9 +116,13 @@ getbean会发生什么?
 ![bean生命周期](https://user-images.githubusercontent.com/2216435/65381356-0ab87c80-dd22-11e9-8e31-901d8e7bf9fb.png)
 
 # 5. Bean实例化时机&ApplicationContext
-## 何时触发实例化
-
-
+### 何时触发实例化
+	SpringApplication.run	// spring boot
+		refreshContext
+			refresh	// AbstractApplicationContext
+				finishBeanFactoryInitialization
+					beanFactory.preInstantiateSingletons
+						getBean
 
 # 6. BeanFactoryPostProcessor
 
