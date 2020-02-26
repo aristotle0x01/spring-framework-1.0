@@ -63,7 +63,7 @@ BeanDefinition注册容器
 		testFactoryNesting
 
 
-# 3. 实例容器+初始化 
+# 3. 实例容器+Bean初始化 
 getbean会发生什么?
 
 以XmlListableBeanFactoryTests.testFactoryNesting为例：
@@ -105,7 +105,22 @@ getbean会发生什么?
 				invokeInitMethods(bean, beanName, mergedBeanDefinition);
 				bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 
-# 4. beanfactorypostprocessor #
+# 4. BeanPostProcessor
+> public interface BeanPostProcessor
+> 
+> Factory hook that allows for custom modification of new bean instances, e.g. checking for marker interfaces or wrapping them with proxies.
+> ApplicationContexts can autodetect BeanPostProcessor beans in their bean definitions and apply them to any beans subsequently created. Plain bean factories allow for programmatic registration of post-processors, applying to all beans created through this factory.
+> 
+> Typically, post-processors that populate beans via marker interfaces or the like will implement postProcessBeforeInitialization(java.lang.Object, java.lang.String), while post-processors that wrap beans with proxies will normally implement postProcessAfterInitialization(java.lang.Object, java.lang.String).
+
+![bean生命周期](https://user-images.githubusercontent.com/2216435/65381356-0ab87c80-dd22-11e9-8e31-901d8e7bf9fb.png)
+
+# 5. Bean实例化时机&ApplicationContext
+## 何时触发实例化
+
+
+
+# 6. BeanFactoryPostProcessor
 
 原始的BeanFactory这一层并未做实现，要到ApplicationContext层
 
@@ -121,27 +136,14 @@ getbean会发生什么?
 
 ![生命周期](https://user-images.githubusercontent.com/2216435/65381707-7fdb8000-dd29-11e9-8a08-8f4f2acce4d4.png)
 
-# 5. beanpostprocessor #
-> public interface BeanPostProcessor
-> 
-> Factory hook that allows for custom modification of new bean instances, e.g. checking for marker interfaces or wrapping them with proxies.
-> ApplicationContexts can autodetect BeanPostProcessor beans in their bean definitions and apply them to any beans subsequently created. Plain bean factories allow for programmatic registration of post-processors, applying to all beans created through this factory.
-> 
-> Typically, post-processors that populate beans via marker interfaces or the like will implement postProcessBeforeInitialization(java.lang.Object, java.lang.String), while post-processors that wrap beans with proxies will normally implement postProcessAfterInitialization(java.lang.Object, java.lang.String).
-
-![bean生命周期](https://user-images.githubusercontent.com/2216435/65381356-0ab87c80-dd22-11e9-8e31-901d8e7bf9fb.png)
-
-# 6. ApplicationContext #
-如何初始化所有bean?
-
-# 7. 值得研究的点 #
+# 7. 值得研究的点
 1. 工厂方法
 2. 基于aware和postprocessor的扩展点
 3. 多重接口的层次设计
 4. wrapper方法和propertyvalue的抽象，避免直接反射
 5. 异常机制的设计
 
-# 8. 参考 #
+# 8. 参考
 [Spring bean的生命流程](https://segmentfault.com/a/1190000010734016)
 
 [Spring IOC 容器源码分析系列文章导读](https://segmentfault.com/a/1190000015089790)
