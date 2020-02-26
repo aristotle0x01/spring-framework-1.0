@@ -1,7 +1,7 @@
-# 0. ioc核心接口设计 #
+# 0. ioc核心接口设计
 ![spring ioc核心设计](https://user-images.githubusercontent.com/2216435/65381357-0c824000-dd22-11e9-9c33-4b9c19dc13ab.png)
 
-# 1. beandefinition #
+# 1. beandefinition
 xml或者code中bean定义的对应定义及其实现：The main intention is to allow BeanFactoryPostProcessors (like PropertyPlaceholderConfigurer) to access and modify property values.
 
 抽象：
@@ -16,7 +16,7 @@ xml或者code中bean定义的对应定义及其实现：The main intention is to
     AbstractBeanDefinition
     	RootBeanDefinition
     	ChildBeanDefinition // 继承parent bean
-# 2. beanfactory #
+# 2. beanfactory
 原始的容器是啥样的？
 
 BeanDefinition注册容器
@@ -32,7 +32,7 @@ BeanDefinition注册容器
         Object getBean(String name) throws BeansException
     
     bean name是如何确定的？
-    	  一般是xml中的bean id
+        一般是xml中的bean id
 
 具体实现
 
@@ -53,7 +53,7 @@ BeanDefinition注册容器
 							this.beanFactory.registerBeanDefinition(id, beanDefinition);
 					}
 
-# 测试验证 #
+### 测试验证
 
 	org.springframework.beans.factory.xml.XmlListableBeanFactoryTests
 		// 从xml中加载bean定义，并完成注册和容器初始化
@@ -63,7 +63,7 @@ BeanDefinition注册容器
 		testFactoryNesting
 
 
-# 3. 何时初始化 #
+# 3. 实例容器+初始化 
 getbean会发生什么?
 
 以XmlListableBeanFactoryTests.testFactoryNesting为例：
