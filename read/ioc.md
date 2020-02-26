@@ -30,10 +30,12 @@ BeanDefinition注册容器
     BeanFactory
         核心方法：
         Object getBean(String name) throws BeansException
+    
+    bean name是如何确定的？
+    	  一般是xml中的bean id
 
 具体实现
 
-	```
 	XmlBeanFactory
 		XmlBeanDefinitionReader.loadBeanDefinitions
 			registerBeanDefinitions(Document doc, Resource resource)
@@ -50,7 +52,6 @@ BeanDefinition注册容器
 							// 完成注册，实际加入容器
 							this.beanFactory.registerBeanDefinition(id, beanDefinition);
 					}
-	```
 
 # 测试验证 #
 
