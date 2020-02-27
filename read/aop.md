@@ -1,18 +1,16 @@
-# spring aop #
-![](https://user-images.githubusercontent.com/2216435/65811742-c9c3da80-e1ef-11e9-8391-6ce0f948f06a.png)
+# spring aop
 
-### **aop需求** ###
+## **aop需求**
 ![spring 框架](https://user-images.githubusercontent.com/2216435/65569139-12308d80-df8f-11e9-9a3c-e9d7b2498941.png)
 
-### **aop术语** ###
+## **aop术语**
 ![aop](https://user-images.githubusercontent.com/2216435/65569137-10ff6080-df8f-11e9-84a1-4365be5b69cb.png)
 
-**类层次**
-![](https://user-images.githubusercontent.com/2216435/65811698-0f33d800-e1ef-11e9-9c57-d5ef01f16f0c.png)
+# AOP如何织入
+![aop beanpostprocessor层次](https://user-images.githubusercontent.com/2216435/65811616-fd9e0080-e1ed-11e9-8ba3-f22d6c02acff.png)
 
-# 调试源码 #
-
-## 代理如何织入 ##
+首先，AOP的相关功能类(AbstractAutoProxyCreator)，作为BeanPostProcessor，自然会被加载。那么每一个原始的bean实例，通过postProcessAfterInitialization实质上可能变成了aop 
+代理，即为JdkDynamicAopProxy or Cglib2AopProxy。而aop的各个特定功能则通过对Advisor的实现，整体作为集合放入了AopProxy内部，等待切面方法调用invoke具体执行的时候再行调用。在调用时候可以再进行静态和动态匹配等细节操作。
 
     BeanNameAutoProxyCreatorTests
 		setUp()
@@ -25,10 +23,31 @@
 								bean = applyBeanPostProcessorsAfterInitialization(bean, beanName) 
 									for (Iterator it = getBeanPostProcessors().iterator(); it.hasNext();) {
 										BeanPostProcessor beanProcessor = (BeanPostProcessor) it.next();
-										result = beanProcessor.postProcessAfterInitialization(result, name); // 乃成于此
+										
+										// 乃成于此
+										result = beanProcessor.postProcessAfterInitialization(result, name);
+											getInterceptorsAndAdvisorsForBean
+												// AbstractAdvisorAutoProxyCreator
+												getInterceptorsAndAdvisorsForBean
+												    getInterceptorsAndAdvisorsForBean
+												        findEligibleAdvisors
+												            // DefaultAdvisorAutoProxyCreator
+												            findCandidateAdvisors
+												               BeanFactoryUtils.beanNamesIncludingAncestors(owningFactory, Advisor.class)
+												        // 对切面进行排序
+												        sortAdvisors
+										   // 需代理的接口
+										   proxyFactory.addInterface
+										   
+										   // aop切面实现功能类
+									       proxyFactory.addAdvisor(advisor);
+										   
+                                           // 生成代理
+									       proxyFactory.getProxy
+									          JdkDynamicAopProxy or Cglib2AopProxy
 									}
-![aop beanpostprocessor层次](https://user-images.githubusercontent.com/2216435/65811616-fd9e0080-e1ed-11e9-8ba3-f22d6c02acff.png)
-## 是否施加代理 ##
+
+## 是否施加代理
 
     AbstractAutoProxyCreator
     	postProcessAfterInitialization
@@ -46,14 +65,16 @@
 			findEligibleAdvisors
 				findCandidateAdvisors();
 					BeanFactoryUtils.beanNamesIncludingAncestors(owningFactory, Advisor.class)
-				eligibleAdvice=AopUtils.canApply(candidate, clazz, null) // 逐个比对可否施加于clazz
+					
+			    // 逐个比对可否施加于clazz
+				eligibleAdvice=AopUtils.canApply(candidate, clazz, null) 
 					// 由此可以看出pointcut应该由具体的Advisor，比如事物拦截器，性能拦截器
 					// 来实现，以此仅对其应该施加的对象进行代理
 					Pointcut
 						ClassFilter
 						MethodMatcher
 
-## 如何使用不同的PointCut ##
+## 如何使用不同的PointCut
 
 由具体实现决定，可以继承既有StaticMethodMatcherPointcut，DynamicMethodMatcherPointcutAdvisor
 ![](https://user-images.githubusercontent.com/2216435/65811716-528e4680-e1ef-11e9-8150-5fa3bf7fe25a.png)
@@ -148,6 +169,9 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 ![](https://user-images.githubusercontent.com/2216435/65811725-75205f80-e1ef-11e9-86b4-dfcd106c2f14.png)
 ## 类的层次接口 ##
 ![总层次](https://user-images.githubusercontent.com/2216435/65811654-5f5e6a80-e1ee-11e9-8632-d5dc90aa1a32.jpg)
+
+## **类层次**
+![](https://user-images.githubusercontent.com/2216435/65811698-0f33d800-e1ef-11e9-9c57-d5ef01f16f0c.png)
 # 研究点 #
 ![](https://user-images.githubusercontent.com/2216435/65811682-dbf14900-e1ee-11e9-8170-067a926f895e.png)
 
