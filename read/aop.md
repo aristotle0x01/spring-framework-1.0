@@ -47,7 +47,8 @@
 											   JdkDynamicAopProxy or Cglib2AopProxy
 									}
 
-## 是否施加代理
+### 是否织入aop代理
+找出所有aop实现，与实例化后的bean进行比对，比对从类层次，方法层次(任一个方法满足即可)。若发现，那么则生成代理，否则原bean返回。
 
     AbstractAutoProxyCreator
     	postProcessAfterInitialization
@@ -63,16 +64,20 @@
 	AbstractAdvisorAutoProxyCreator
 		getInterceptorsAndAdvisorsForBean
 			findEligibleAdvisors
+				// 找出所有aop 实现
 				findCandidateAdvisors();
 					BeanFactoryUtils.beanNamesIncludingAncestors(owningFactory, Advisor.class)
 					
-			    // 逐个比对可否施加于clazz
+				// 逐个比对可否施加于clazz
 				eligibleAdvice=AopUtils.canApply(candidate, clazz, null) 
 					// 由此可以看出pointcut应该由具体的Advisor，比如事物拦截器，性能拦截器
 					// 来实现，以此仅对其应该施加的对象进行代理
 					Pointcut
 						ClassFilter
 						MethodMatcher
+
+### 增强何时执行
+如果bean被增强，在生成代理，在调用相应方法时候，增强功能作为链表存储于代理类内部，按语义进行执行。
 
 ## 如何使用不同的PointCut
 
