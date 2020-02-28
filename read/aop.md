@@ -40,11 +40,11 @@
 										   proxyFactory.addInterface
 										   
 										   // aop切面实现功能类
-									       proxyFactory.addAdvisor(advisor);
+										   proxyFactory.addAdvisor(advisor);
 										   
-                                           // 生成代理
-									       proxyFactory.getProxy
-									          JdkDynamicAopProxy or Cglib2AopProxy
+										   // 生成代理
+										   proxyFactory.getProxy
+										      JdkDynamicAopProxy or Cglib2AopProxy
 									}
 
 ## 是否施加代理
