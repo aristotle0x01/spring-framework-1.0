@@ -25,7 +25,7 @@
 										BeanPostProcessor beanProcessor = (BeanPostProcessor) it.next();
 										
 										// 乃成于此
-										result = beanProcessor.postProcessAfterInitialization(result, name);
+										beanProcessor.postProcessAfterInitialization(result, name);
 											getInterceptorsAndAdvisorsForBean
 												// AbstractAdvisorAutoProxyCreator
 												getInterceptorsAndAdvisorsForBean
@@ -36,14 +36,14 @@
 												               BeanFactoryUtils.beanNamesIncludingAncestors(owningFactory, Advisor.class)
 												        // 对切面进行排序
 												        sortAdvisors
-										   // 需代理的接口
-										   proxyFactory.addInterface
+											// 需代理的接口
+											proxyFactory.addInterface
 										   
-										   // aop切面实现功能类
-										   proxyFactory.addAdvisor(advisor);
+											// aop切面实现功能类
+											proxyFactory.addAdvisor(advisor);
 										   
-										   // 生成代理
-										   proxyFactory.getProxy
+											// 生成代理
+											proxyFactory.getProxy
 										      JdkDynamicAopProxy or Cglib2AopProxy
 									}
 
