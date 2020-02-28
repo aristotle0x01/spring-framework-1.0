@@ -44,7 +44,7 @@
 										   
 											// 生成代理
 											proxyFactory.getProxy
-										      JdkDynamicAopProxy or Cglib2AopProxy
+											   JdkDynamicAopProxy or Cglib2AopProxy
 									}
 
 ## 是否施加代理
