@@ -142,7 +142,49 @@ getbean会发生什么?
 
 ![生命周期](https://user-images.githubusercontent.com/2216435/65381707-7fdb8000-dd29-11e9-8a08-8f4f2acce4d4.png)
 
-# 7. 值得研究的点
+# 7. 基于注解的bean加载扫描
+	// spring boot
+	SpringApplication.run	
+		refreshContext
+			// AbstractApplicationContext
+			refresh
+			    // Invoke factory processors registered as beans in the context.
+				invokeBeanFactoryPostProcessors(beanFactory)
+					// PostProcessorRegistrationDelegate
+					invokeBeanFactoryPostProcessors
+					    // postProcessor
+						postProcessBeanDefinitionRegistry(registry)
+						    // ConfigurationClassPostProcessor
+							processConfigBeanDefinitions(registry)
+								// ConfigurationClassParser
+								parse
+									processConfigurationClass
+										doProcessConfigurationClass
+											// Process any @ComponentScan annotations
+											Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
+													sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
+											if (!componentScans.isEmpty() &&
+													!this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
+												for (AnnotationAttributes componentScan : componentScans) {
+													// The config class is annotated with @ComponentScan -> perform the scan immediately
+													Set<BeanDefinitionHolder> scannedBeanDefinitions =
+															this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
+													// Check the set of scanned definitions for any further config classes and parse recursively if needed
+													for (BeanDefinitionHolder holder : scannedBeanDefinitions) {
+														if (ConfigurationClassUtils.checkConfigurationClassCandidate(
+																holder.getBeanDefinition(), this.metadataReaderFactory)) {
+															parse(holder.getBeanDefinition().getBeanClassName(), holder.getBeanName());
+														}
+													}
+												}
+											}								
+			    
+			    ...
+			 
+			    // bean的实例化
+				finishBeanFactoryInitialization
+					
+# 8. 值得研究的点
 * nacos对BeanFactoryPostProcessor的使用，适配配置中心加载机制
 * 基于注解的bean加载扫描
 * 工厂方法
@@ -151,7 +193,7 @@ getbean会发生什么?
 * wrapper方法和propertyvalue的抽象，避免直接反射
 * 异常机制的设计
 
-# 8. 参考
+# 9. 参考
 [Spring bean的生命流程](https://segmentfault.com/a/1190000010734016)
 
 [Spring IOC 容器源码分析系列文章导读](https://segmentfault.com/a/1190000015089790)
