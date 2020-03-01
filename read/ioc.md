@@ -161,19 +161,22 @@ getbean会发生什么?
 									processConfigurationClass
 										doProcessConfigurationClass
 											// Process any @ComponentScan annotations
+											// sourceClass 此时为加了@SpringBootApplication main方法启动类
 											Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 													sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
 											if (!componentScans.isEmpty() &&
 													!this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
 												for (AnnotationAttributes componentScan : componentScans) {
 													// The config class is annotated with @ComponentScan -> perform the scan immediately
+													// 加载所有@Configuration,@Service, @Component, @Repository, @Controller注解的类
 													Set<BeanDefinitionHolder> scannedBeanDefinitions =
 															this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
 													// Check the set of scanned definitions for any further config classes and parse recursively if needed
 													for (BeanDefinitionHolder holder : scannedBeanDefinitions) {
 														if (ConfigurationClassUtils.checkConfigurationClassCandidate(
 																holder.getBeanDefinition(), this.metadataReaderFactory)) {
-															parse(holder.getBeanDefinition().getBeanClassName(), holder.getBeanName());
+																// 处理 @Configuration 中的bean定义
+																parse(holder.getBeanDefinition().getBeanClassName(), holder.getBeanName());
 														}
 													}
 												}
