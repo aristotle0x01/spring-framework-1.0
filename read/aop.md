@@ -172,17 +172,42 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 **Invocation**
 
 ![](https://user-images.githubusercontent.com/2216435/65811725-75205f80-e1ef-11e9-86b4-dfcd106c2f14.png)
+
+### 高版本注解aop实现
+对于spring 5以上的版本而言，核心在于org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator
+
+![](https://user-images.githubusercontent.com/2216435/75761074-5fe9c700-5d73-11ea-8d65-6f6f3aa85333.png)
+加载beanpostprocessor时候该类实现了对@Aspect注解实现的扫描
+
+	AbstractApplicationContext
+		refresh
+			registerBeanPostProcessors
+				// 固定了AopConfigUtils:public static final String AUTO_PROXY_CREATOR_BEAN_NAME = “org.springframework.aop.config.internalAutoProxyCreator”
+				// 字符串，实际会映射到AnnotationAwareAspectJAutoProxyCreator
+
+如何映射到AnnotationAwareAspectJAutoProxyCreator
+
+	spring.boot.autoconfigure
+		META-INF
+			spring.factories
+				# Auto Configure
+				org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+				org.springframework.boot.autoconfigure.aop.AopAutoConfiguration,\
+				...
+![](https://user-images.githubusercontent.com/2216435/75762251-55303180-5d75-11ea-93d3-ffa32796e869.png)
+![](https://user-images.githubusercontent.com/2216435/75762352-7e50c200-5d75-11ea-984f-5b68199e1fa3.png)
+![](https://user-images.githubusercontent.com/2216435/75762447-a3453500-5d75-11ea-845b-3dee8e7fe6db.png)
+
 ## 参考类图
 ![总层次](https://user-images.githubusercontent.com/2216435/65811654-5f5e6a80-e1ee-11e9-8632-d5dc90aa1a32.jpg)
 
 ![](https://user-images.githubusercontent.com/2216435/65811698-0f33d800-e1ef-11e9-9c57-d5ef01f16f0c.png)
+
 ## 研究点
 ![](https://user-images.githubusercontent.com/2216435/65811682-dbf14900-e1ee-11e9-8170-067a926f895e.png)
 
 ### 事务aop实现
 
-### 高版本注解aop实现
-    
 ### jdk dynamic proxy
 **method.invoke**
 >If the underlying method is an instance method, it is invoked using dynamic method lookup
