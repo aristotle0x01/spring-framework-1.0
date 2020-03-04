@@ -242,19 +242,42 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 
 ![](https://user-images.githubusercontent.com/2216435/65811698-0f33d800-e1ef-11e9-9c57-d5ef01f16f0c.png)
 
-## 研究点
-![](https://user-images.githubusercontent.com/2216435/65811682-dbf14900-e1ee-11e9-8170-067a926f895e.png)
+## jdk dynamic proxy
+	
+	JdkDynamicProxyTests
+		testProxyIsJustInterface
+			proxy.setAge
+				JdkDynamicAopProxy.invoke
+					AopProxyUtils.invokeJoinpointUsingReflection
+					   // with actual target
+						m.invoke
+							Method.invoke
+								MethodAccessor.invoke
+								   // private static native Object invoke0(Method var0, Object var1, Object[] var2)
+									NativeMethodAccessorImpl.invoke0(this.method, obj, args)
 
-### jdk dynamic proxy
+
 **method.invoke**
 >If the underlying method is an instance method, it is invoked using dynamic method lookup
 
 有意思，这就意味着Method其实只是描述，需要根据描述去具体的target上查找。涉及到jvm的具体实现
 
+
+## 研究点
+![](https://user-images.githubusercontent.com/2216435/65811682-dbf14900-e1ee-11e9-8170-067a926f895e.png)
+
+
+### java执行过程中间产生的proxy类
+
+### java 语言元素的抽象层次
+	Method extends Executable 
+						extends AccessibleObject implements Member, GenericDeclaration
+
 ### cglib
 
 ### threadlocal 内部实现
 WeakReference
+
 ### 事务类内部调用的问题
 虽然类会被增强，外部调用a，a实现调用b（带注解）。调用a时通过invoke，最终会进入原始的target类，那么调用a时实质上是this.b，未增强的，所以不会生效。
 
