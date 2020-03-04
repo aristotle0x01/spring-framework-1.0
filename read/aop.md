@@ -262,17 +262,21 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 
 有意思，这就意味着Method其实只是描述，需要根据描述去具体的target上查找。涉及到jvm的具体实现
 
+## jdk proxy & cglib
+
+java执行过程中间产生的proxy类
+	
+	org.springframework.aa.proxy
+
+ref:
+
+[Java 动态代理详解](https://juejin.im/post/5c1ca8df6fb9a049b347f55c)
 
 ## 研究点
 ![](https://user-images.githubusercontent.com/2216435/65811682-dbf14900-e1ee-11e9-8170-067a926f895e.png)
 
-
-### java执行过程中间产生的proxy类
-
 ### java 语言元素的抽象层次
 	Method extends Executable extends AccessibleObject implements Member, GenericDeclaration
-
-### cglib
 
 ### threadlocal 内部实现
 WeakReference
