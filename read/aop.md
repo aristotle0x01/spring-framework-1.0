@@ -270,8 +270,7 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 ### java执行过程中间产生的proxy类
 
 ### java 语言元素的抽象层次
-	Method extends Executable 
-						extends AccessibleObject implements Member, GenericDeclaration
+	Method extends Executable extends AccessibleObject implements Member, GenericDeclaration
 
 ### cglib
 
