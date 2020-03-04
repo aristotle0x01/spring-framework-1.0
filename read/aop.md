@@ -278,7 +278,7 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 WeakReference
 
 ### 事务类内部调用的问题
-虽然类会被增强，外部调用a，a实现调用b（带注解）。调用a时通过invoke，最终会进入原始的target类，那么调用a时实质上是this.b，未增强的，所以不会生效。
+虽然类会被增强，外部调用a，a实现调用b（带注解）。调用a时通过invoke(仍然是proxy调用，只是在其上找不到增强)，最终会进入原始的target类，那么调用a时实质上是this.b，未增强的，所以不会生效。
 
 exposeProxy实质是通过threadlocal将增强的代理类回传到target类，比较怪异
 ### targetsource有什么用
