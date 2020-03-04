@@ -173,7 +173,7 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 
 ![](https://user-images.githubusercontent.com/2216435/65811725-75205f80-e1ef-11e9-86b4-dfcd106c2f14.png)
 
-### 高版本注解aop实现
+### 基于注解的aop实现
 对于spring 5以上的版本而言，核心在于org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator
 
 ![](https://user-images.githubusercontent.com/2216435/75761074-5fe9c700-5d73-11ea-8d65-6f6f3aa85333.png)
@@ -198,6 +198,45 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 ![](https://user-images.githubusercontent.com/2216435/75762352-7e50c200-5d75-11ea-984f-5b68199e1fa3.png)
 ![](https://user-images.githubusercontent.com/2216435/75762447-a3453500-5d75-11ea-845b-3dee8e7fe6db.png)
 
+## 事务aop实现
+
+	spring.boot.autoconfigure
+		META-INF
+			spring.factories
+				# Auto Configure
+				org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+			    org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration,\
+				...
+
+![](https://user-images.githubusercontent.com/2216435/75842004-2a43ed00-5e0a-11ea-8e2b-5ed02a7ef830.png)
+![](https://user-images.githubusercontent.com/2216435/75842095-6d05c500-5e0a-11ea-8b62-de701131fafb.png)
+![](https://user-images.githubusercontent.com/2216435/75842164-97f01900-5e0a-11ea-9ba4-0f354003a6e4.png)
+![image](https://user-images.githubusercontent.com/2216435/75842229-c241d680-5e0a-11ea-9134-f05d0fc68dd2.png)
+
+事务功能的加载过程
+	
+	AbstractApplicationContext
+		refresh
+			registerBeanPostProcessors
+			   // field
+				beanFactory
+					beanPostProcessors
+					    // one post processor will be
+						AnnotationAwareAspectJAutoProxyCreator
+							advisedBeans
+								transactionInterceptor
+								transactionAttributeSource
+								org.springframework.transaction.config.internalTransactionAdvisor
+							aspectJAdvisorsBuilder
+							   // 自定义aspect实现
+								myAspect1
+								myAspect2
+								...
+								
+那么在bean实例化的时候，被增强的代理实现里面就会包括BeanFactoryTransactionAttributeSourceAdvisor以实现事务功能，当然还有其它的切面实现。			
+
+![image](https://user-images.githubusercontent.com/2216435/75843731-d5ef3c00-5e0e-11ea-8b3f-ab8320e7c17f.png)
+
 ## 参考类图
 ![总层次](https://user-images.githubusercontent.com/2216435/65811654-5f5e6a80-e1ee-11e9-8632-d5dc90aa1a32.jpg)
 
@@ -205,8 +244,6 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 
 ## 研究点
 ![](https://user-images.githubusercontent.com/2216435/65811682-dbf14900-e1ee-11e9-8170-067a926f895e.png)
-
-### 事务aop实现
 
 ### jdk dynamic proxy
 **method.invoke**
