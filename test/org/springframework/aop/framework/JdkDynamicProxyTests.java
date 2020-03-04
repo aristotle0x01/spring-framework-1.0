@@ -70,7 +70,8 @@ public class JdkDynamicProxyTests extends AbstractAopProxyTests {
 		pc.setTarget(raw);
 		JdkDynamicAopProxy aop = new JdkDynamicAopProxy(pc);
 
-		Object proxy = aop.getProxy();
+		ITestBean proxy = (ITestBean)aop.getProxy();
+		proxy.setAge(33);
 		assertTrue(proxy instanceof ITestBean);
 		assertTrue(!(proxy instanceof TestBean));
 	}
