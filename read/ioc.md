@@ -191,7 +191,7 @@ getbean会发生什么?
 ![WechatIMG509](https://user-images.githubusercontent.com/2216435/75622934-81ff1000-5be0-11ea-965b-3b7b5159aed2.jpg)
 
 # 8. 值得研究的点
-* nacos适配配置中心加载机制
+* nacos适配配置中心加载机制:需要放到cloud部分研究
 * 事件机制，刷新时机
 * 工厂方法
 * 基于aware和postprocessor的扩展点
