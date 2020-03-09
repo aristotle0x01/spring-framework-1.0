@@ -191,8 +191,8 @@ getbean会发生什么?
 ![WechatIMG509](https://user-images.githubusercontent.com/2216435/75622934-81ff1000-5be0-11ea-965b-3b7b5159aed2.jpg)
 
 # 8. 值得研究的点
-* nacos对BeanFactoryPostProcessor的使用，适配配置中心加载机制
-* 基于注解的bean加载扫描
+* nacos适配配置中心加载机制
+* 事件机制，刷新时机
 * 工厂方法
 * 基于aware和postprocessor的扩展点
 * 多重接口的层次设计
