@@ -234,8 +234,12 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 								...
 								
 那么在bean实例化的时候，被增强的代理实现里面就会包括BeanFactoryTransactionAttributeSourceAdvisor以实现事务功能，当然还有其它的切面实现。			
-
 ![image](https://user-images.githubusercontent.com/2216435/75843731-d5ef3c00-5e0e-11ea-8b3f-ab8320e7c17f.png)
+
+### 事务类内部调用的问题
+虽然类会被增强，外部调用a，a实现调用b（带注解）。调用a时通过invoke(仍然是proxy调用，只是在其上找不到增强)，最终会进入原始的target类，那么调用a时实质上是this.b，未增强的，所以不会生效。
+
+exposeProxy实质是通过threadlocal将增强的代理类回传到target类，比较怪异
 
 ## 参考类图
 ![总层次](https://user-images.githubusercontent.com/2216435/65811654-5f5e6a80-e1ee-11e9-8632-d5dc90aa1a32.jpg)
@@ -264,29 +268,29 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 
 ## jdk proxy & cglib
 
-java执行过程中间产生的proxy类
-	
-	org.springframework.aa.proxy
-
-ref:
-
-[Java 动态代理详解](https://juejin.im/post/5c1ca8df6fb9a049b347f55c)
-
-## 研究点
-![](https://user-images.githubusercontent.com/2216435/65811682-dbf14900-e1ee-11e9-8170-067a926f895e.png)
+[Java 动态代理](https://github.com/selfpoised/java_proxy/blob/master/README.md)
 
 ### java 语言元素的抽象层次
 	Method extends Executable extends AccessibleObject implements Member, GenericDeclaration
 
+## 研究点
+![](https://user-images.githubusercontent.com/2216435/65811682-dbf14900-e1ee-11e9-8170-067a926f895e.png)
+
 ### threadlocal 内部实现
 WeakReference
 
-### 事务类内部调用的问题
-虽然类会被增强，外部调用a，a实现调用b（带注解）。调用a时通过invoke(仍然是proxy调用，只是在其上找不到增强)，最终会进入原始的target类，那么调用a时实质上是this.b，未增强的，所以不会生效。
-
-exposeProxy实质是通过threadlocal将增强的代理类回传到target类，比较怪异
 ### targetsource有什么用
 HotSwappableTargetSource：双数据源互换实现
+
+### java.lang.Object
+每个方法都可谓宝藏，加以研究，必有所获
+
+这一部分很多native实现，涉及jvm,linux,操作系统知识
+
+	thread在各个操作系统的实现
+	pthread/posix
+	wait方法的实现
+	锁在jvm内部的实现
 
 ## 参考
 [Spring源码分析](https://juejin.im/post/5ada8a5cf265da0b9347df8c)
