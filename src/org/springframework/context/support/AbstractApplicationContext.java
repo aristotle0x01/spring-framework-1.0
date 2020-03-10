@@ -220,6 +220,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @throws BeansException if the bean factory could not be initialized
 	 */
 	public void refresh() throws BeansException {
+		System.out.println("xxxxxxxx ");
 		this.startupTime = System.currentTimeMillis();
 
 		// tell subclass to refresh the internal bean factory

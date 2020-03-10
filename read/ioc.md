@@ -190,7 +190,52 @@ getbean会发生什么?
 
 ![WechatIMG509](https://user-images.githubusercontent.com/2216435/75622934-81ff1000-5be0-11ea-965b-3b7b5159aed2.jpg)
 
-# 8. 值得研究的点
+# 8. logic of ApplicationContext
+ApplicationContext 几大核心功能：
+
+* BeanFactory
+* load file resources
+* publish events
+* Inheritance from a parent context
+* resolve messages, supporting internationalization
+
+		AbstractApplicationContext
+			refresh
+				// 另起炉灶，新建立了beanfactory作为容器
+				refreshBeanFactory
+				
+				// invoke factory processors registered with the context instance
+				for (Iterator it = getBeanFactoryPostProcessors().iterator(); it.hasNext();) {
+					BeanFactoryPostProcessor factoryProcessor = (BeanFactoryPostProcessor) it.next();
+					factoryProcessor.postProcessBeanFactory(beanFactory);
+				}
+				
+				// 可以视为用户自定义
+				// invoke factory processors registered as beans in the context
+				invokeBeanFactoryPostProcessors();
+
+				// register bean processor that intercept bean creation
+				registerBeanPostProcessors();
+
+				// initialize message source for this context
+				initMessageSource();
+
+				// initialize other special beans in specific context subclasses
+				onRefresh();
+
+				// check for listener beans and register them
+				refreshListeners();
+
+				// instantiate singletons this late to allow them to access the message source
+				beanFactory.preInstantiateSingletons();
+
+				// last step: publish respective event
+				publishEvent(new ContextRefreshedEvent(this));
+
+refresh函数，根据父子层次，可能会调用多次，比如基本的application context, servlet context，
+后续的spring cloud会更复杂，应予研究
+
+# 9. 值得研究的点
 * nacos适配配置中心加载机制:需要放到cloud部分研究
 * spring event, resource, env and application loading logic
 * 工厂方法
@@ -199,7 +244,7 @@ getbean会发生什么?
 * wrapper方法和propertyvalue的抽象，避免直接反射
 * 异常机制的设计
 
-# 9. 参考
+# 10. 参考
 [Spring bean的生命流程](https://segmentfault.com/a/1190000010734016)
 
 [Spring IOC 容器源码分析系列文章导读](https://segmentfault.com/a/1190000015089790)
