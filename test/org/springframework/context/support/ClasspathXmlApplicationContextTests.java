@@ -17,6 +17,8 @@
 package org.springframework.context.support;
 
 import junit.framework.TestCase;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 
 public class ClasspathXmlApplicationContextTests extends TestCase {
 	
@@ -25,6 +27,11 @@ public class ClasspathXmlApplicationContextTests extends TestCase {
 	}
 	
 	public void testMultiple() throws Exception {
+		DefaultResourceLoader dr = new DefaultResourceLoader();
+		Resource r1 = dr.getResource("/org/springframework/context/support/contextB.xml");
+		Resource r = dr.getResource("classpath:/org/springframework/context/TestListener.class");
+		Resource r2 = dr.getResource("file:/data/logs/exception-2020-03-09.0.log");
+
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
 				new String[] { 
 				"/org/springframework/context/support/contextB.xml",
