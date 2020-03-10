@@ -192,7 +192,7 @@ getbean会发生什么?
 
 # 8. 值得研究的点
 * nacos适配配置中心加载机制:需要放到cloud部分研究
-* 事件机制，刷新时机
+* spring event, resource, env and application loading logic
 * 工厂方法
 * 基于aware和postprocessor的扩展点
 * 多重接口的层次设计
