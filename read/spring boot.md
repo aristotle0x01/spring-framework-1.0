@@ -22,6 +22,21 @@
 
 [Key Components and Internals of Spring Boot Framework](https://www.journaldev.com/7989/key-components-and-internals-of-spring-boot-framework)
 
+## spring boot conditons
+* @ConditionalOnBean
+* @ConditionalOnClass
+* @ConditionalOnExpression
+* @ConditionalOnMissingBean
+* @ConditionalOnMissingClass
+* @ConditionalOnNotWebApplication
+* @ConditionalOnResource
+* @ConditionalOnWebApplication
+
+[condition test](https://github.com/selfpoised/spring-boot-examples/tree/master/spring-boot-helloWorld)
+
+## spring boot cli
+[cli groovy test](https://github.com/selfpoised/spring-boot-examples/tree/master/spring-boot-helloWorld)
+
 ## 待研究点
 ### Groovy lang
 
