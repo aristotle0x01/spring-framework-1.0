@@ -37,6 +37,20 @@
 ## spring boot cli
 [cli groovy test](https://github.com/selfpoised/spring-boot-examples/tree/master/spring-boot-helloWorld)
 
+## 自定义starter
+其核心在于遵守spring boot的约定：
+
+	resources
+		META-INF
+			spring.factories
+				org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.xxx.yyy.YourAutoConfiguration
+				
+![image](https://user-images.githubusercontent.com/2216435/76679202-613fad00-6619-11ea-9030-c5f59bc4a6ca.png)
+
+[spring-boot-helloWorld](https://github.com/selfpoised/spring-boot-examples/tree/master/spring-boot-helloWorld)
+
+[实战|如何自定义SpringBoot Starter？](https://github.com/selfpoised/spring-boot-examples/tree/master/spring-boot-helloWorld)
+
 ## 待研究点
 ### Groovy lang
 
