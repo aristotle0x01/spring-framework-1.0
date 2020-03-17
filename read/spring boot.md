@@ -112,6 +112,7 @@
 
 ![image](https://user-images.githubusercontent.com/2216435/76399550-bda49180-63b9-11ea-99e3-66dc8da5eae6.png)
 
+### spring boot初始化过程，消息通知，资源加载等
 ## 参考
 [Understanding Spring Boot
 ](https://geowarin.com/understanding-spring-boot/)
