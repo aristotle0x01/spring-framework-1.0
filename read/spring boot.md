@@ -51,6 +51,62 @@
 
 [实战|如何自定义SpringBoot Starter？](https://github.com/selfpoised/spring-boot-examples/tree/master/spring-boot-helloWorld)
 
+## Spring 自动配置核心
+
+	@SpringBootApplication
+		@SpringBootConfiguration
+			@Configuration
+		@EnableAutoConfiguration
+			@AutoConfigurationPackage
+				@Import(AutoConfigurationPackages.Registrar.class)
+					AutoConfigurationPackages
+			@Import(AutoConfigurationImportSelector.class)
+		@ComponentScan
+
+同样以之为例[spring-boot-helloWorld](https://github.com/selfpoised/spring-boot-examples/tree/master/spring-boot-helloWorld)
+
+#### AutoConfigurationPackages
+将spring boot 启动类所在的包："com.neo", 注册为BasePackages.class类型的beandefinition，后面AutoConfigurationImportSelector来看有什么用
+
+#### AutoConfigurationImportSelector
+见ConfigurationClassPostProcessor
+
+#### ConfigurationClassPostProcessor
+
+	AbstractApplicationContext
+		refresh
+			invokeBeanFactoryPostProcessors
+			    // BeanDefinitionRegistryPostProcessor
+			    // 支持扩展方式进行的bean定义
+				invokeBeanDefinitionRegistryPostProcessors
+					for (BeanDefinitionRegistryPostProcessor postProcessor : postProcessors)
+						// ConfigurationClassPostProcessor
+						// @Configuration注解处理器
+						postProcessor.postProcessBeanDefinitionRegistry(registry);
+							// ConfigurationClassPostProcessor
+							// 拿到启动类SpringApplication bean
+							processConfigBeanDefinitions
+								// ConfigurationClassParser
+								parse
+									deferredImportSelectorHandler.process
+										// DeferredImportSelectorGroupingHandler
+										processGroupImports
+											getImports
+											   // AutoConfigurationGroup
+												process
+													// AutoConfigurationImportSelector
+													getAutoConfigurationEntry
+														// SpringFactoriesLoader.loadFactoryNames：META-INF/spring.factories 定义加载					
+														getCandidateConfigurations
+														// 再完成各种AutoConfiguration过滤（排除不符合条件者）
+														
+*BeanDefinitionRegistryPostProcessor*
+![BeanDefinitionRegistryPostProcessor](https://user-images.githubusercontent.com/2216435/76842321-0aceaa80-6875-11ea-9b9e-25e08422c713.png)
+*ConfigurationClassPostProcessor*
+![ConfigurationClassPostProcessor](https://user-images.githubusercontent.com/2216435/76842413-3356a480-6875-11ea-987a-662774565c3b.png)
+
+#### import注解
+
 ## 待研究点
 ### Groovy lang
 
