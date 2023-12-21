@@ -23,7 +23,7 @@ BeanDefinition注册容器
 
     BeanDefinitionRegistry
         /** Map of bean definition objects, keyed by bean name */
-	    private Map beanDefinitionMap = new HashMap();
+        private Map beanDefinitionMap = new HashMap();
 
 抽象容器
 
@@ -71,14 +71,14 @@ getbean会发生什么?
 **AbstractBeanFactory:**
 
 >This class provides singleton/prototype determination, singleton cache,aliases, FactoryBean handling, and bean definition merging for child bean definitions. It also allows for management of a bean factory hierarchy, implementing the HierarchicalBeanFactory interface.
-	
+
 	/** Cache of singletons: bean name --> bean instance */
 	private final Map singletonCache = Collections.synchronizedMap(new HashMap());
-
+	
 	/** BeanPostProcessors to apply in createBean */
 	private final List beanPostProcessors = new ArrayList();
-
-    /** Parent bean factory, for bean inheritance support */
+	
+	/** Parent bean factory, for bean inheritance support */
 	private BeanFactory parentBeanFactory;
 	
 	getBean
@@ -90,7 +90,7 @@ getbean会发生什么?
 				// 生成对象
 				new BeanWrapperImpl(bean.getBeanClass());
 						clazz.newInstance()
-
+	
 				// 设置属性
 				applyPropertyValues
 					// 递归创建可能的对象类型属性
@@ -213,22 +213,22 @@ ApplicationContext 几大核心功能：
 				// 可以视为用户自定义
 				// invoke factory processors registered as beans in the context
 				invokeBeanFactoryPostProcessors();
-
+		
 				// register bean processor that intercept bean creation
 				registerBeanPostProcessors();
-
+		
 				// initialize message source for this context
 				initMessageSource();
-
+		
 				// initialize other special beans in specific context subclasses
 				onRefresh();
-
+		
 				// check for listener beans and register them
 				refreshListeners();
-
+		
 				// instantiate singletons this late to allow them to access the message source
 				beanFactory.preInstantiateSingletons();
-
+		
 				// last step: publish respective event
 				publishEvent(new ContextRefreshedEvent(this));
 

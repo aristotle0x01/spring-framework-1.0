@@ -13,53 +13,54 @@
 代理，即为JdkDynamicAopProxy or Cglib2AopProxy。而aop的各个特定功能则通过对Advisor的实现，整体作为集合放入了AopProxy内部，等待切面方法调用invoke具体执行的时候再行调用。在调用时候可以再进行静态和动态匹配等细节操作。
 
     BeanNameAutoProxyCreatorTests
-		setUp()
-			new ClassPathXmlApplicationContext("xxx.xml")
-				refresh()
-					registerBeanPostProcessors() // 代理类注册
-					beanFactory.preInstantiateSingletons()
-						getBean()
-							createBean()
-								bean = applyBeanPostProcessorsAfterInitialization(bean, beanName) 
-									for (Iterator it = getBeanPostProcessors().iterator(); it.hasNext();) {
-										BeanPostProcessor beanProcessor = (BeanPostProcessor) it.next();
-										
-										// 乃成于此
-										beanProcessor.postProcessAfterInitialization(result, name);
-											getInterceptorsAndAdvisorsForBean
-												// AbstractAdvisorAutoProxyCreator
-												getInterceptorsAndAdvisorsForBean
-												    getInterceptorsAndAdvisorsForBean
-												        findEligibleAdvisors
-												            // DefaultAdvisorAutoProxyCreator
-												            findCandidateAdvisors
-												               BeanFactoryUtils.beanNamesIncludingAncestors(owningFactory, Advisor.class)
-												        // 对切面进行排序
-												        sortAdvisors
-											// 需代理的接口
-											proxyFactory.addInterface
-										   
-											// aop切面实现功能类
-											proxyFactory.addAdvisor(advisor);
-										   
-											// 生成代理
-											proxyFactory.getProxy
-											   JdkDynamicAopProxy or Cglib2AopProxy
-									}
+    	setUp()
+    		new ClassPathXmlApplicationContext("xxx.xml")
+    			refresh()
+    				registerBeanPostProcessors() // 代理类注册
+    				beanFactory.preInstantiateSingletons()
+    					getBean()
+    						createBean()
+    							bean = applyBeanPostProcessorsAfterInitialization(bean, beanName) 
+    								for (Iterator it = getBeanPostProcessors().iterator(); it.hasNext();) {
+    									BeanPostProcessor beanProcessor = (BeanPostProcessor) it.next();
+    									
+    									// 乃成于此
+    									beanProcessor.postProcessAfterInitialization(result, name);
+    										getInterceptorsAndAdvisorsForBean
+    											// AbstractAdvisorAutoProxyCreator
+    											getInterceptorsAndAdvisorsForBean
+    											    getInterceptorsAndAdvisorsForBean
+    											        findEligibleAdvisors
+    											            // DefaultAdvisorAutoProxyCreator
+    											            findCandidateAdvisors
+    											               BeanFactoryUtils.beanNamesIncludingAncestors(owningFactory, Advisor.class)
+    											        // 对切面进行排序
+    											        sortAdvisors
+    										// 需代理的接口
+    										proxyFactory.addInterface
+    									   
+    										// aop切面实现功能类
+    										proxyFactory.addAdvisor(advisor);
+    									   
+    										// 生成代理
+    										proxyFactory.getProxy
+    										   JdkDynamicAopProxy or Cglib2AopProxy
+    								}
 
 ### 是否织入aop代理
 找出所有aop实现，与实例化后的bean进行比对，比对从类层次，方法层次(任一个方法满足即可)。若发现，那么则生成代理，否则原bean返回。
 
     AbstractAutoProxyCreator
     	postProcessAfterInitialization
-			getInterceptorsAndAdvisorsForBean
+    		getInterceptorsAndAdvisorsForBean
 ![getInterceptorsAndAdvisorsForBean](https://user-images.githubusercontent.com/2216435/65667911-4b422e00-e073-11e9-8026-c119e4ffa8af.png)
 
 	// 配置bean name，比对发现(private List beanNames)
-    BeanNameAutoProxyCreator
+	BeanNameAutoProxyCreator
 		getInterceptorsAndAdvisorsForBean
-    	
-    
+
+
+​    
 	// 根据接口等动态匹配发现，是Spring默认方式(DefaultAdvisorAutoProxyCreator)
 	AbstractAdvisorAutoProxyCreator
 		getInterceptorsAndAdvisorsForBean
@@ -99,8 +100,8 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 
 	// debug入口
 	AbstractAopProxyTests
-    	testReplaceArgument
-
+		testReplaceArgument
+	
 	// 以jdk代理示例，任何被代理的方法调用会直接进入
 	JdkDynamicAopProxy.invoke
 		getInterceptorsAndDynamicInterceptionAdvice
@@ -127,14 +128,14 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 								}
 					this.methodCache.put(method, cached);
 				}
-
+	
 		invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);							
 		// Proceed to the joinpoint through the interceptor chain
 		retVal = invocation.proceed();
 			if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
 				return invokeJoinpoint();
 			}
-
+	
 			Object interceptorOrInterceptionAdvice = this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex);
 			if (interceptorOrInterceptionAdvice instanceof InterceptorAndDynamicMethodMatcher) {
 				// Evaluate dynamic method matcher here: static part will already have
@@ -156,14 +157,14 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 				return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);
 			}
 					
-    AdvisorChainFactoryUtils
-    	calculateInterceptorsAndDynamicInterceptionAdvice
-    
-    HashMapCachingAdvisorChainFactory
-    	methodCache
-    
-    GlobalAdvisorAdapterRegistry
-    	getInterceptor
+	AdvisorChainFactoryUtils
+		calculateInterceptorsAndDynamicInterceptionAdvice
+	
+	HashMapCachingAdvisorChainFactory
+		methodCache
+	
+	GlobalAdvisorAdapterRegistry
+		getInterceptor
 
 **AopProxy**
 
@@ -232,7 +233,7 @@ Spring采用这样的机制：在创建代理时对目标类的每个连接点�
 								myAspect1
 								myAspect2
 								...
-								
+
 那么在bean实例化的时候，被增强的代理实现里面就会包括BeanFactoryTransactionAttributeSourceAdvisor以实现事务功能，当然还有其它的切面实现。			
 ![image](https://user-images.githubusercontent.com/2216435/75843731-d5ef3c00-5e0e-11ea-8b3f-ab8320e7c17f.png)
 
@@ -247,7 +248,7 @@ exposeProxy实质是通过threadlocal将增强的代理类回传到target类，�
 ![](https://user-images.githubusercontent.com/2216435/65811698-0f33d800-e1ef-11e9-9c57-d5ef01f16f0c.png)
 
 ## jdk dynamic proxy
-	
+
 	JdkDynamicProxyTests
 		testProxyIsJustInterface
 			proxy.setAge
